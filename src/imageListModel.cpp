@@ -20,12 +20,18 @@ const QPixmap ImageListModel::getThumbnail(const QString& name) const {
   return m_images.find(name)->second.m_thumbnail;
 }
 
+const QString ImageListModel::getShortName(const QString& name) const {
+  return m_images.find(name)->second.getName();
+}
+
 QVariant ImageListModel::data(const QModelIndex& index, int role) const {
   if (index.isValid()) {
     switch(role) {
     case Qt::DecorationRole:
       return QVariant(getThumbnail(m_imageNames[index.row()]));
     case Qt::DisplayRole:
+        return QVariant(getShortName(m_imageNames[index.row()]));
+    case Qt::ToolTipRole:
       return QVariant(m_imageNames[index.row()]);
     default:
       return QVariant();

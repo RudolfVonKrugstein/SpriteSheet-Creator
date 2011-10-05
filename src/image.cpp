@@ -2,7 +2,7 @@
 
 Image::Image() {}
   
-Image::Image(QImage& f_image) : m_anchor(0,0), m_image(f_image) {
+Image::Image(QImage& f_image, const QString l_name) : m_anchor(0,0), m_image(f_image), m_name(l_name) {
   QImage tmp = f_image.scaled(64, 64);
   m_thumbnail = QPixmap::fromImage(tmp);
   autoCropImage();

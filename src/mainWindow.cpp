@@ -42,7 +42,7 @@ void MainWindowImpl::importImage(const QString& name) {
     return;
   }
   image.convertToFormat(QImage::Format_ARGB32);
-  m_imageModel.addImage(Image(image), name);
+  m_imageModel.addImage(Image(image, QFileInfo(name).baseName()), name);
 }
 
 void MainWindowImpl::imageListSelectionChanged(QItemSelection n, QItemSelection o) {
@@ -64,7 +64,7 @@ void MainWindowImpl::recreatePackedTexture() {
   QImage outImage(ip.getDim(), QImage::Format_ARGB32);
   QPainter painter(&outImage);
   for (std::list<Image*>::iterator i = l_images.begin(); i != l_images.end(); ++i) {
-    if (autocrop->checkState() == Qt::Checked)
+    if (autocrop->checkState() != Qt::Checked)
       painter.drawImage((*i)->m_anchor, (*i)->getImage());
     else
       painter.drawImage((*i)->m_anchor, (*i)->getCroppedImage());

@@ -17,6 +17,7 @@ public:
   virtual Qt::ItemFlags flags(const QModelIndex &index) const;
   void onDataChanged();
   const QPixmap getThumbnail(const QString& name) const;
+  const QString getShortName(const QString& name) const;
   virtual QStringList mimeTypes() const;
   virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
 

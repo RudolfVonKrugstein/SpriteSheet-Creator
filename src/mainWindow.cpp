@@ -61,7 +61,7 @@ void MainWindowImpl::recreatePackedTexture() {
   ImagePacker ip(l_images,  autocrop->checkState() == Qt::Checked);
   ip.packImages();
   // Create destionation image
-  QImage outImage(ip.getDim(), QImage::Format_ARGB32);
+  m_outImage = QImage(ip.getDim(), QImage::Format_ARGB32);
   QPainter painter(&outImage);
   for (std::list<Image*>::iterator i = l_images.begin(); i != l_images.end(); ++i) {
     if (autocrop->checkState() != Qt::Checked)
@@ -71,4 +71,42 @@ void MainWindowImpl::recreatePackedTexture() {
   }  
   // Set image
   outTexture->setPixmap(QPixmap::fromImage(outImage));
+}
+
+void MainWindowImpl::export(const QString outDir, const QString xmlFile, const QString pngFile) {
+  // Write the png
+  QImageWriter l_writer;
+  l_writer.setFormat("png");
+  l_write.setFileName(outDir + pngFile);
+  if (!l_writer.write(m_outImage)) {
+    QMessageBox.error(this, "Unable to write PNG", l_writer.errorString());
+    return;
+  }
+  // Write the xml
+  QDomDocument doc("SpriteSheet");  
+  QDomElement root = doc.createElement("spritesheet");
+  doc.appendChild(root);
+  QDomElement texture = doc.createElement("texture");
+  texture.setAttribute("name", pngFile);
+  root.appendChild(texture);
+  
+  std::list<Image*> l_images;
+  m_imageModel.getImagePointerList(l_images);
+  
+  for (std::list<Image*>::iterator i = l_images.begin(); i != l_images.end(); ++i) {
+    QDomElement sprite = doc.createElement("sprite");
+    // Set name
+    sprite.setAttribute("name", (*i)->getShortName());
+    // Set color offset
+    bool l_autoCrop = autocrop->checkState() == Qt::Checked;
+    if (!l_autoCrop){
+      sprite.setAttribute("colorOffset", "0,0");
+    } else {
+      sprite.setAttribute("colorOffset", QString::number((*i)->getCroppedOffset().x()) + "," + QString::number((*i)->getCroppedOffset().y()));
+    }
+    // Set texture rect
+    sprite.setAttribute("textureRect", QString::number((*i)->m_anchor.x()) + "," + QString::number((*i)->m_anchor.y()) + "," + QString((*i)->width(l_autoCrop)) + "," + QString((*i)->height(l_autoCrop)));
+    // Add the sprite
+    root.appendChild(sprite);
+  }
 }

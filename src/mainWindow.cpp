@@ -1,5 +1,7 @@
 #include <QtGui>
 #include "mainWindow.h"
+#include "imagePacker.h"
+#include <iostream>
 
 MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(), m_behaviorModel(&m_imageModel)
 {
@@ -25,11 +27,12 @@ MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(), m_behaviorMode
 }
 
 void MainWindowImpl::importImages() {
-  QStringList names = QFileDialog::getOpenFileNames(this, tr("Select images to import"), QString::null, tr("Images (*.png, *.xpm, *.jpg)"));
+  QStringList names = QFileDialog::getOpenFileNames(this, tr("Select images to import"), QString::null, tr("Images (*.png *.xpm *.jpg)"));
   for (QStringList::iterator n = names.begin(); n != names.end(); ++n) {
     importImage(*n);
   }
   m_imageModel.onDataChanged();
+  recreatePackedTexture();
 }
 
 void MainWindowImpl::importImage(const QString& name) {
@@ -39,7 +42,7 @@ void MainWindowImpl::importImage(const QString& name) {
     return;
   }
   image.convertToFormat(QImage::Format_ARGB32);
-  m_imageModel.addImage(Image(image), QFileInfo(name).baseName());
+  m_imageModel.addImage(Image(image), name);
 }
 
 void MainWindowImpl::imageListSelectionChanged(QItemSelection n, QItemSelection o) {
@@ -48,4 +51,24 @@ void MainWindowImpl::imageListSelectionChanged(QItemSelection n, QItemSelection 
   } else {
     actionDelete_Image->setEnabled(true);
   }
+}
+
+void MainWindowImpl::recreatePackedTexture() {
+  // Create a list of images
+  std::list<Image*> l_images;
+  m_imageModel.getImagePointerList(l_images);
+  // Find image positions
+  ImagePacker ip(l_images,  autocrop->checkState() == Qt::Checked);
+  ip.packImages();
+  // Create destionation image
+  QImage outImage(ip.getDim(), QImage::Format_ARGB32);
+  QPainter painter(&outImage);
+  for (std::list<Image*>::iterator i = l_images.begin(); i != l_images.end(); ++i) {
+    if (autocrop->checkState() == Qt::Checked)
+      painter.drawImage((*i)->m_anchor, (*i)->getImage());
+    else
+      painter.drawImage((*i)->m_anchor, (*i)->getCroppedImage());
+  }  
+  // Set image
+  outTexture->setPixmap(QPixmap::fromImage(outImage));
 }

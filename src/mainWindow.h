@@ -17,6 +17,7 @@ private:
   BehaviorListModel m_behaviorModel;
   
   void importImage(const QString& name);
+  void recreatePackedTexture();
   
 public slots:
   void importImages();

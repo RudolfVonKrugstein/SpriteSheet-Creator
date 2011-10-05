@@ -20,6 +20,7 @@ public:
   virtual QStringList mimeTypes() const;
   virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
 
+  void getImagePointerList(std::list<Image*>& f_list);
 private:
   std::map<QString, Image>  m_images;
   std::vector<QString>      m_imageNames;

@@ -70,3 +70,9 @@ QMimeData *ImageListModel::mimeData(const QModelIndexList &indexes) const {
 void ImageListModel::onDataChanged() {
   emit dataChanged(createIndex(0,0), createIndex(m_imageNames.size(), 1)); 
 }
+
+void ImageListModel::getImagePointerList(std::list<Image*>& f_images) {
+  for (std::map<QString, Image>::iterator i = m_images.begin(); i != m_images.end(); ++i) {
+    f_images.push_back(&(i->second));
+  }
+}

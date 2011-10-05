@@ -2,6 +2,7 @@
 #include "mainWindow.h"
 #include "imagePacker.h"
 #include <iostream>
+#include <QtXml/QDomDocument>
 
 MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(), m_behaviorModel(&m_imageModel)
 {
@@ -62,7 +63,7 @@ void MainWindowImpl::recreatePackedTexture() {
   ip.packImages();
   // Create destionation image
   m_outImage = QImage(ip.getDim(), QImage::Format_ARGB32);
-  QPainter painter(&outImage);
+  QPainter painter(&m_outImage);
   for (std::list<Image*>::iterator i = l_images.begin(); i != l_images.end(); ++i) {
     if (autocrop->checkState() != Qt::Checked)
       painter.drawImage((*i)->m_anchor, (*i)->getImage());
@@ -70,16 +71,16 @@ void MainWindowImpl::recreatePackedTexture() {
       painter.drawImage((*i)->m_anchor, (*i)->getCroppedImage());
   }  
   // Set image
-  outTexture->setPixmap(QPixmap::fromImage(outImage));
+  outTexture->setPixmap(QPixmap::fromImage(m_outImage));
 }
 
-void MainWindowImpl::export(const QString outDir, const QString xmlFile, const QString pngFile) {
+void MainWindowImpl::exportXML(const QString outDir, const QString xmlFile, const QString pngFile) {
   // Write the png
   QImageWriter l_writer;
   l_writer.setFormat("png");
-  l_write.setFileName(outDir + pngFile);
+  l_writer.setFileName(outDir + pngFile);
   if (!l_writer.write(m_outImage)) {
-    QMessageBox.error(this, "Unable to write PNG", l_writer.errorString());
+    QMessageBox::critical(this, "Unable to write PNG", l_writer.errorString());
     return;
   }
   // Write the xml
@@ -96,7 +97,7 @@ void MainWindowImpl::export(const QString outDir, const QString xmlFile, const Q
   for (std::list<Image*>::iterator i = l_images.begin(); i != l_images.end(); ++i) {
     QDomElement sprite = doc.createElement("sprite");
     // Set name
-    sprite.setAttribute("name", (*i)->getShortName());
+    sprite.setAttribute("name", (*i)->getName());
     // Set color offset
     bool l_autoCrop = autocrop->checkState() == Qt::Checked;
     if (!l_autoCrop){

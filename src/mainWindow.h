@@ -15,9 +15,11 @@ public:
 private:
   ImageListModel m_imageModel;
   BehaviorListModel m_behaviorModel;
+  QImage m_outImage;
   
   void importImage(const QString& name);
   void recreatePackedTexture();
+  void exportXML(const QString outDir, const QString xmlFile, const QString pngFile);
   
 public slots:
   void importImages();

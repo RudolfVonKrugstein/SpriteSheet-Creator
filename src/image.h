@@ -18,6 +18,7 @@ public:
   inline const QImage& getImage() const { return m_image;};
   inline const QImage& getCroppedImage() const { return m_croppedImage;};
   inline const QString& getName() const { return m_name;}
+  inline const QPoint& getCroppedOffset() const { return m_croppedOffset;};
 private:
   QImage m_image;
   QImage m_croppedImage;

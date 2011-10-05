@@ -33,7 +33,7 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>484</width>
+           <width>456</width>
            <height>339</height>
           </rect>
          </property>
@@ -84,7 +84,7 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>58</width>
+           <width>76</width>
            <height>339</height>
           </rect>
          </property>
@@ -108,7 +108,7 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>253</width>
+           <width>254</width>
            <height>339</height>
           </rect>
          </property>
@@ -135,7 +135,11 @@
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <widget class="QListWidget" name="behaviorList"/>
+       <widget class="QListView" name="behaviorList">
+        <property name="flow">
+         <enum>QListView::LeftToRight</enum>
+        </property>
+       </widget>
        <widget class="QListView" name="currentBehavior">
         <property name="flow">
          <enum>QListView::LeftToRight</enum>
@@ -152,7 +156,7 @@
      <x>0</x>
      <y>0</y>
      <width>835</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

@@ -224,6 +224,11 @@
     <string>Delete Behavior</string>
    </property>
   </action>
+  <action name="actionEdit_Behavior">
+   <property name="text">
+    <string>Edit Behavior</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

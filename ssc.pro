@@ -14,11 +14,13 @@ HEADERS += src/behaviorListModel.h \
            src/image.h \
            src/imageListModel.h \
            src/imagePacker.h \
-           src/mainWindow.h
+           src/mainWindow.h \
+           src/data.h
 FORMS += guidata/gui.ui
 SOURCES += src/behaviorListModel.cpp \
            src/image.cpp \
            src/imageListModel.cpp \
            src/imagePacker.cpp \
            src/main.cpp \
-           src/mainWindow.cpp
+           src/mainWindow.cpp \
+           src/data.cpp

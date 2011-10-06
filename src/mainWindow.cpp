@@ -2,9 +2,8 @@
 #include "mainWindow.h"
 #include "imagePacker.h"
 #include <iostream>
-#include <QtXml/QDomDocument>
 
-MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(), m_behaviorModel(&m_imageModel)
+MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(m_data), m_behaviorModel(m_data)
 {
   setupUi(this);
 
@@ -33,7 +32,9 @@ void MainWindowImpl::importImages() {
     importImage(*n);
   }
   m_imageModel.onDataChanged();
-  recreatePackedTexture();
+  m_data.recreatePackedTexture(autocrop->checkState() == Qt::Checked);
+  // Set image
+  outTexture->setPixmap(QPixmap::fromImage(m_data.m_outImage));
 }
 
 void MainWindowImpl::importImage(const QString& name) {
@@ -43,7 +44,7 @@ void MainWindowImpl::importImage(const QString& name) {
     return;
   }
   image.convertToFormat(QImage::Format_ARGB32);
-  m_imageModel.addImage(Image(image, QFileInfo(name).baseName()), name);
+  m_data.addImage(Image(image, QFileInfo(name).baseName()), name);
 }
 
 void MainWindowImpl::imageListSelectionChanged(QItemSelection n, QItemSelection o) {
@@ -54,60 +55,3 @@ void MainWindowImpl::imageListSelectionChanged(QItemSelection n, QItemSelection 
   }
 }
 
-void MainWindowImpl::recreatePackedTexture() {
-  // Create a list of images
-  std::list<Image*> l_images;
-  m_imageModel.getImagePointerList(l_images);
-  // Find image positions
-  ImagePacker ip(l_images,  autocrop->checkState() == Qt::Checked);
-  ip.packImages();
-  // Create destionation image
-  m_outImage = QImage(ip.getDim(), QImage::Format_ARGB32);
-  QPainter painter(&m_outImage);
-  for (std::list<Image*>::iterator i = l_images.begin(); i != l_images.end(); ++i) {
-    if (autocrop->checkState() != Qt::Checked)
-      painter.drawImage((*i)->m_anchor, (*i)->getImage());
-    else
-      painter.drawImage((*i)->m_anchor, (*i)->getCroppedImage());
-  }  
-  // Set image
-  outTexture->setPixmap(QPixmap::fromImage(m_outImage));
-}
-
-void MainWindowImpl::exportXML(const QString outDir, const QString xmlFile, const QString pngFile) {
-  // Write the png
-  QImageWriter l_writer;
-  l_writer.setFormat("png");
-  l_writer.setFileName(outDir + pngFile);
-  if (!l_writer.write(m_outImage)) {
-    QMessageBox::critical(this, "Unable to write PNG", l_writer.errorString());
-    return;
-  }
-  // Write the xml
-  QDomDocument doc("SpriteSheet");  
-  QDomElement root = doc.createElement("spritesheet");
-  doc.appendChild(root);
-  QDomElement texture = doc.createElement("texture");
-  texture.setAttribute("name", pngFile);
-  root.appendChild(texture);
-  
-  std::list<Image*> l_images;
-  m_imageModel.getImagePointerList(l_images);
-  
-  for (std::list<Image*>::iterator i = l_images.begin(); i != l_images.end(); ++i) {
-    QDomElement sprite = doc.createElement("sprite");
-    // Set name
-    sprite.setAttribute("name", (*i)->getName());
-    // Set color offset
-    bool l_autoCrop = autocrop->checkState() == Qt::Checked;
-    if (!l_autoCrop){
-      sprite.setAttribute("colorOffset", "0,0");
-    } else {
-      sprite.setAttribute("colorOffset", QString::number((*i)->getCroppedOffset().x()) + "," + QString::number((*i)->getCroppedOffset().y()));
-    }
-    // Set texture rect
-    sprite.setAttribute("textureRect", QString::number((*i)->m_anchor.x()) + "," + QString::number((*i)->m_anchor.y()) + "," + QString((*i)->width(l_autoCrop)) + "," + QString((*i)->height(l_autoCrop)));
-    // Add the sprite
-    root.appendChild(sprite);
-  }
-}

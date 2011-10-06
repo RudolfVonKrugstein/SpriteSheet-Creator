@@ -4,6 +4,7 @@
 #include "ui_gui.h"
 #include "imageListModel.h"
 #include "behaviorListModel.h"
+#include "data.h"
 
 class MainWindowImpl : public QMainWindow, private Ui::MainWindow
 {
@@ -13,13 +14,11 @@ public:
   MainWindowImpl(QWidget *parent = 0);
 
 private:
+  SpriteSheetData m_data;
   ImageListModel m_imageModel;
   BehaviorListModel m_behaviorModel;
-  QImage m_outImage;
   
   void importImage(const QString& name);
-  void recreatePackedTexture();
-  void exportXML(const QString outDir, const QString xmlFile, const QString pngFile);
   
 public slots:
   void importImages();

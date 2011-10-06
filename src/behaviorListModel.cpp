@@ -1,10 +1,10 @@
 #include "behaviorListModel.h"
 
-BehaviorListModel::BehaviorListModel(ImageListModel* f_ilm, QObject* parent) : QAbstractListModel(parent), m_imageListModel(f_ilm) {
+BehaviorListModel::BehaviorListModel(SpriteSheetData& f_data, QObject* parent) : QAbstractListModel(parent), m_data(f_data) {
 }
 
 int BehaviorListModel::rowCount(const QModelIndex& parent) const {
-  return m_imageNames.size();
+  return m_data.m_behaviorNames.size();
 }
 
 QVariant BehaviorListModel::data(const QModelIndex& index, int role) const {
@@ -12,10 +12,8 @@ QVariant BehaviorListModel::data(const QModelIndex& index, int role) const {
     return QVariant();
   }
   switch(role) {
-    case Qt::DecorationRole:
-      return QVariant(m_imageListModel->getThumbnail(m_imageNames[index.row()]));
-    case Qt::ToolTipRole:
-      return QVariant(m_imageNames[index.row()]);
+    case Qt::DisplayRole:
+      return m_data.m_behaviorNames[index.row()];
   }
   return QVariant();
 }

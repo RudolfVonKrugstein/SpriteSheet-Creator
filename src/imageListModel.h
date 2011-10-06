@@ -4,27 +4,22 @@
 #include <QAbstractListModel>
 #include <map>
 #include <vector>
-#include "image.h"
+#include "data.h"
 
 class ImageListModel : public QAbstractListModel
 {
 public:
-  ImageListModel(QObject* parent = 0);
-  void addImage(const Image image, const QString& name);
+  ImageListModel(SpriteSheetData& f_data, QObject* parent = 0);
   virtual int rowCount(const QModelIndex& parent = QModelIndex() ) const;
   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
   virtual Qt::DropActions supportedDragActions() const;
   virtual Qt::ItemFlags flags(const QModelIndex &index) const;
   void onDataChanged();
-  const QPixmap getThumbnail(const QString& name) const;
-  const QString getShortName(const QString& name) const;
   virtual QStringList mimeTypes() const;
   virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
 
-  void getImagePointerList(std::list<Image*>& f_list);
 private:
-  std::map<QString, Image>  m_images;
-  std::vector<QString>      m_imageNames;
+  SpriteSheetData& m_data;
 };
 
 #endif

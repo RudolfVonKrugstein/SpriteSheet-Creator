@@ -33,8 +33,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>484</width>
-           <height>339</height>
+           <width>315</width>
+           <height>359</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
@@ -84,8 +84,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>264</width>
-           <height>324</height>
+           <width>316</width>
+           <height>359</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
@@ -126,8 +126,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>253</width>
-           <height>339</height>
+           <width>164</width>
+           <height>359</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout_2">
@@ -206,40 +206,25 @@
     <string>Delete Image</string>
    </property>
   </action>
+  <action name="actionAppend_Image">
+   <property name="text">
+    <string>Append Image</string>
+   </property>
+   <property name="toolTip">
+    <string>Append selected image to current behavior</string>
+   </property>
+  </action>
+  <action name="actionAdd_Behavior">
+   <property name="text">
+    <string>Add Behavior</string>
+   </property>
+  </action>
+  <action name="actionDelete_Behavior">
+   <property name="text">
+    <string>Delete Behavior</string>
+   </property>
+  </action>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>addImage</sender>
-   <signal>clicked()</signal>
-   <receiver>actionImport_Images</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>39</x>
-     <y>624</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>deleteImage</sender>
-   <signal>clicked()</signal>
-   <receiver>actionDelete_Image</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>92</x>
-     <y>624</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

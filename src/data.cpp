@@ -2,9 +2,26 @@
 #include "imagePacker.h"
 #include <QtXml/QDomDocument>
 
-void SpriteSheetData::addImage(const Image image, const QString& name) {
+void SpriteSheetData::clear() {
+  m_behaviorNames.clear();
+  m_behaviors.clear();
+  m_images.clear();
+  m_imageNames.clear();
+}
+
+void SpriteSheetData::addImage(const Image& image, const QString& name) {
   m_images[name] = image;
   m_imageNames.push_back(name); 
+}
+
+bool SpriteSheetData::loadImage(const QString& fileName, const QString& name) {
+  QImage image(fileName); 
+  if (image.isNull()) {
+    return false;
+  } 
+  image.convertToFormat(QImage::Format_ARGB32);
+  addImage(Image(image, name), fileName);
+  return true;
 }
 
 const QPixmap SpriteSheetData::getThumbnail(const QString& name) const {
@@ -62,6 +79,62 @@ void SpriteSheetData::save(QDomDocument& doc, QDomElement& root) {
     behaviors.appendChild(behavior);
   }  
   root.appendChild(behaviors);
+}
+
+bool SpriteSheetData::load(QDomDocument& doc, QDomNode& root) {
+  // Extract images and behaviors
+  QDomNode images = root.namedItem("images");
+  if (images.isNull()) {
+    return false;
+  }
+  QDomNode behaviors = root.namedItem("behaviors");
+  if (behaviors.isNull()) {
+    return false;
+  }
+
+  // Load all images
+  QDomNode imageNode = images.firstChild();
+  while( !imageNode.isNull() )
+  {
+    QDomElement e = imageNode.toElement();
+    if( e.tagName() != "image" )
+    {
+      return false;
+    }
+    QString fileName = e.attribute("fileName");
+    QString shortName = e.attribute("shortName");
+    if (!loadImage(fileName, shortName)) {
+      return false;
+    }
+    imageNode = imageNode.nextSibling();
+  }
+  
+  // Load all behaviors
+  QDomNode behaviorNode = behaviors.firstChild();
+  while( !behaviorNode.isNull() )
+  {
+    QDomElement e = behaviorNode.toElement();
+    if( e.tagName() != "behavior" )
+    {
+      return false;
+    }
+    QString name = e.attribute("name");
+    m_behaviors[name] = Behavior();
+    m_behaviorNames.push_back(name);
+    QDomNode frameNode = behaviorNode.firstChild();
+    while ( !frameNode.isNull() ) {
+      QDomElement e2 = frameNode.toElement();
+      if ( e2.tagName() != "frame") {
+        return false;
+      }
+      QString imageName = e2.attribute("image");
+      m_behaviors[name].push_back(imageName);
+      frameNode = frameNode.nextSibling();
+    }
+
+    behaviorNode = behaviorNode.nextSibling();
+  }
+  return true;
 }
 
 void SpriteSheetData::exportXML(const QString outDir, const QString xmlFile, const QString pngFile, bool f_autocrop, QWidget* f_parent){

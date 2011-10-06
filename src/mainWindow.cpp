@@ -38,13 +38,9 @@ void MainWindowImpl::importImages() {
 }
 
 void MainWindowImpl::importImage(const QString& name) {
-  QImage image(name);
-  if (image.isNull()) {
+  if (!m_data.loadImage(name, QFileInfo(name).baseName())) {
     QMessageBox::warning(this, "Unable to load image", "Unable to load " + name);
-    return;
   }
-  image.convertToFormat(QImage::Format_ARGB32);
-  m_data.addImage(Image(image, QFileInfo(name).baseName()), name);
 }
 
 void MainWindowImpl::imageListSelectionChanged(QItemSelection n, QItemSelection o) {

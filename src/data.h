@@ -9,14 +9,16 @@ typedef std::vector<QString> Behavior;
 // Data class for all spritesheet data
 class SpriteSheetData {
 public:
-  void addImage(const Image image, const QString& name);
+  void addImage(const Image& image, const QString& name);
+  bool loadImage(const QString& fileName, const QString& name);
   const QPixmap getThumbnail(const QString& name) const;
   const QString getShortName(const QString& name) const;
   void getImagePointerList(std::list<Image*>& f_list);
   void recreatePackedTexture(bool f_autocrop);
   void exportXML(const QString outDir, const QString xmlFile, const QString pngFile, bool f_autocrop, QWidget* f_parent);
   void save(QDomDocument& doc, QDomElement& root);
-  void load(QDomDocument& doc, QDomElement& root);
+  bool load(QDomDocument& doc, QDomNode& root);
+  void clear();
 
   std::map<QString, Image>    m_images;
   std::vector<QString>        m_imageNames;

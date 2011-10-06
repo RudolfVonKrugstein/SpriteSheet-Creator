@@ -39,6 +39,31 @@ void SpriteSheetData::recreatePackedTexture(bool f_autocrop) {
   }  
 }
 
+void SpriteSheetData::save(QDomDocument& doc, QDomElement& root) {
+  // Export images
+  QDomElement images = doc.createElement("images");
+  for (std::vector<QString>::iterator i = m_imageNames.begin(); i != m_imageNames.end(); ++i) {
+    QDomElement image = doc.createElement("image");
+    image.setAttribute("fileName", *i);
+    image.setAttribute("shortName", m_images[*i].getName());
+    images.appendChild(image);
+  }  
+  root.appendChild(images);
+  // Export behaviors
+  QDomElement behaviors = doc.createElement("behaviors");
+  for (std::vector<QString>::iterator i = m_behaviorNames.begin(); i != m_behaviorNames.end(); ++i) {
+    QDomElement behavior = doc.createElement("behavior");
+    behavior.setAttribute("name", *i);
+    for (std::vector<QString>::iterator j = m_behaviors[*i].begin(); j != m_behaviors[*i].end(); ++j) {
+      QDomElement frame = doc.createElement("frame");
+      frame.setAttribute("image", *j);
+      behavior.appendChild(frame);
+    }
+    behaviors.appendChild(behavior);
+  }  
+  root.appendChild(behaviors);
+}
+
 void SpriteSheetData::exportXML(const QString outDir, const QString xmlFile, const QString pngFile, bool f_autocrop, QWidget* f_parent){
   // Write the png
   QImageWriter l_writer;
@@ -58,6 +83,8 @@ void SpriteSheetData::exportXML(const QString outDir, const QString xmlFile, con
   
   std::list<Image*> l_images;
   getImagePointerList(l_images);
+
+  QDomElement sprites = doc.createElement("sprites");
   
   // Export images
   for (std::list<Image*>::iterator i = l_images.begin(); i != l_images.end(); ++i) {
@@ -73,10 +100,12 @@ void SpriteSheetData::exportXML(const QString outDir, const QString xmlFile, con
     // Set texture rect
     sprite.setAttribute("textureRect", QString::number((*i)->m_anchor.x()) + "," + QString::number((*i)->m_anchor.y()) + "," + QString((*i)->width(f_autocrop)) + "," + QString((*i)->height(f_autocrop)));
     // Add the sprite
-    root.appendChild(sprite);
+    sprites.appendChild(sprite);
   }
+  root.appendChild(sprites);
 
-  // Export behviors
+  // Export behaviors
+  QDomElement behaviors = doc.createElement("behaviors");
   for (std::vector<QString>::iterator i = m_behaviorNames.begin(); i != m_behaviorNames.end(); ++i) {
     QDomElement behavior = doc.createElement("behavior");
     // Set name
@@ -87,8 +116,9 @@ void SpriteSheetData::exportXML(const QString outDir, const QString xmlFile, con
       frame.setAttribute("sprite", *j); 
       behavior.appendChild(frame);
     }
-    root.appendChild(behavior);
+    behaviors.appendChild(behavior);
   }
+  root.appendChild(behaviors);
 
   // Write xml out
   QFile file( outDir + xmlFile);

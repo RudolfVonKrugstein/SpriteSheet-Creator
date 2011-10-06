@@ -3,6 +3,7 @@
 
 #include <QtGui>
 #include "image.h"
+#include <QtXml/QDomDocument>
 
 typedef std::vector<QString> Behavior;
 // Data class for all spritesheet data
@@ -14,6 +15,8 @@ public:
   void getImagePointerList(std::list<Image*>& f_list);
   void recreatePackedTexture(bool f_autocrop);
   void exportXML(const QString outDir, const QString xmlFile, const QString pngFile, bool f_autocrop, QWidget* f_parent);
+  void save(QDomDocument& doc, QDomElement& root);
+  void load(QDomDocument& doc, QDomElement& root);
 
   std::map<QString, Image>    m_images;
   std::vector<QString>        m_imageNames;
@@ -24,4 +27,3 @@ public:
 };
 
 #endif
-

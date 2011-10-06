@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>835</width>
-    <height>657</height>
+    <width>1004</width>
+    <height>767</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,8 +33,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>315</width>
-           <height>359</height>
+           <width>385</width>
+           <height>382</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
@@ -46,14 +46,21 @@
             <item>
              <widget class="QToolButton" name="addImage">
               <property name="text">
-               <string>Add</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QToolButton" name="deleteImage">
               <property name="text">
-               <string>Delete</string>
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="appendImage">
+              <property name="text">
+               <string>...</string>
               </property>
              </widget>
             </item>
@@ -84,8 +91,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>316</width>
-           <height>359</height>
+           <width>386</width>
+           <height>382</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
@@ -126,22 +133,25 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>164</width>
-           <height>359</height>
+           <width>201</width>
+           <height>382</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout_2">
-          <item row="0" column="1">
-           <widget class="QCheckBox" name="autocrop">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::ExpandingFieldsGrow</enum>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
              <string>Auto-crop images:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="autocrop">
+            <property name="text">
+             <string/>
             </property>
            </widget>
           </item>
@@ -153,15 +163,81 @@
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <widget class="QListView" name="behaviorList">
-        <property name="flow">
-         <enum>QListView::LeftToRight</enum>
-        </property>
+       <widget class="QWidget" name="verticalLayoutWidget">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QListView" name="behaviorList"/>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QToolButton" name="newBehavior">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="editBehavior">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </widget>
-       <widget class="QListView" name="currentBehavior">
-        <property name="flow">
-         <enum>QListView::LeftToRight</enum>
-        </property>
+       <widget class="QWidget" name="horizontalLayoutWidget">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QListView" name="currentBehavior"/>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QToolButton" name="moveFrameRight">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="moveFrameLeft">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </widget>
       </widget>
      </widget>
@@ -173,7 +249,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>835</width>
+     <width>1004</width>
      <height>21</height>
     </rect>
    </property>
@@ -181,7 +257,8 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionImport_Images"/>
+    <addaction name="actionLoad"/>
+    <addaction name="actionSave"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -190,11 +267,14 @@
     <string>toolBar</string>
    </property>
    <attribute name="toolBarArea">
-    <enum>RightToolBarArea</enum>
+    <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionImport_Images"/>
+   <addaction name="actionLoad"/>
+   <addaction name="actionSave"/>
   </widget>
   <action name="actionImport_Images">
    <property name="text">
@@ -227,6 +307,26 @@
   <action name="actionEdit_Behavior">
    <property name="text">
     <string>Edit Behavior</string>
+   </property>
+  </action>
+  <action name="actionLoad">
+   <property name="text">
+    <string>Load</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionMove_frame_right">
+   <property name="text">
+    <string>Move frame right</string>
+   </property>
+  </action>
+  <action name="actionMove_frame_left">
+   <property name="text">
+    <string>Move frame left</string>
    </property>
   </action>
  </widget>

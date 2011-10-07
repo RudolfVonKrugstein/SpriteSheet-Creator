@@ -205,3 +205,47 @@ void SpriteSheetData::exportXML(const QString outDir, const QString xmlFile, con
 
   file.close();
 }
+
+void SpriteSheetData::deleteImage(int f_index) {
+  QString l_name = m_imageNames[f_index];
+  m_images.erase(l_name);
+  for (size_t i = f_index; i < m_imageNames.size()-1; ++i) {
+    m_imageNames[i] = m_imageNames[i+1];
+  }
+  m_imageNames.pop_back();
+  // Remove from all behaviors
+  for (std::map<QString, Behavior>::iterator bi = m_behaviors.begin(); bi != m_behaviors.end(); ++bi) {
+    for (Behavior::iterator i = bi->second.begin(); i != bi->second.end(); /*++i*/) {
+      if ((*i) == l_name) {
+        bi->second.erase(i++);
+      } else {
+        ++i;
+      }
+    }
+  } 
+}
+
+void SpriteSheetData::appendImage(int f_index, int f_behaviorIndex) {
+  m_behaviors[m_behaviorNames[f_behaviorIndex]].push_back(m_imageNames[f_index]);
+}
+
+void SpriteSheetData::addBehavior(const QString f_name) {
+  m_behaviorNames.push_back(f_name);
+  m_behaviors[f_name] = Behavior();
+}
+
+void SpriteSheetData::moveFrameRight(int f_behaviorIndex, int f_frameIndex) {
+  Behavior& l_b = m_behaviors[m_behaviorNames[f_behaviorIndex]];
+  if (f_frameIndex+1 >= l_b.size()) {
+    return;
+  }
+  std::swap(l_b[f_frameIndex], l_b[f_frameIndex+1]);
+}
+
+void SpriteSheetData::moveFrameLeft(int f_behaviorIndex, int f_frameIndex) {
+  Behavior& l_b = m_behaviors[m_behaviorNames[f_behaviorIndex]];
+  if (f_frameIndex <= 0) {
+    return;
+  }
+  std::swap(l_b[f_frameIndex], l_b[f_frameIndex-1]);
+}

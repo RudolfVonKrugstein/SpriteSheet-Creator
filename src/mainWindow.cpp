@@ -44,8 +44,26 @@ MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(m_data), m_behavi
   
   // connect actions
   connect(actionImport_Images, SIGNAL(triggered()), this, SLOT(importImages()));
-  connect(imageList->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(imageListSelectionChanged(QItemSelection, QItemSelection)));
+  connect(actionDelete_Image, SIGNAL(triggered()), this, SLOT(doDeleteImage()));
+  connect(actionAppend_Image, SIGNAL(triggered()), this, SLOT(doAppendImage()));
+  connect(actionAdd_Behavior, SIGNAL(triggered()), this, SLOT(doAddBehavior()));
+  connect(actionEdit_Behavior, SIGNAL(triggered()), this, SLOT(doEditBehavior()));
+  connect(actionMove_frame_right, SIGNAL(triggered()), this, SLOT(doMoveFrameRight()));
+  connect(actionMove_frame_left, SIGNAL(triggered()), this, SLOT(doMoveFrameLeft()));
+  
+  /*connect(imageList->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(imageListSelectionChanged(QItemSelection, QItemSelection)));
+  connect(behaviorList->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(behaviorListSelectionChanged(QItemSelection, QItemSelection)));
+  connect(currentBehavior->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(currentBehaviorSelectionChanged(QItemSelection, QItemSelection)));*/
+  connect(imageList->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(selectionChanged(QItemSelection, QItemSelection)));
+  connect(behaviorList->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(selectionChanged(QItemSelection, QItemSelection)));
+  connect(currentBehavior->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(selectionChanged(QItemSelection, QItemSelection)));
+  
+  // Initial state of actions
   actionDelete_Image->setEnabled(false);
+  actionAppend_Image->setEnabled(false);
+  actionEdit_Behavior->setEnabled(false);
+  actionMove_frame_right->setEnabled(false);
+  actionMove_frame_left->setEnabled(false);
 }
 
 void MainWindowImpl::importImages() {
@@ -65,11 +83,79 @@ void MainWindowImpl::importImage(const QString& name) {
   }
 }
 
-void MainWindowImpl::imageListSelectionChanged(QItemSelection n, QItemSelection o) {
+void MainWindowImpl::selectionChanged(QItemSelection n, QItemSelection o) {
+  bool l_imageSelected = imageList->selectionModel()->selectedIndexes().count() != 0;
+  bool l_behaviorSelected = behaviorList->selectionModel()->selectedIndexes().count() != 0;
+  bool l_currentBeSelected = currentBehavior->selectionModel()->selectedIndexes().count() != 0;
+  actionDelete_Image->setEnabled(l_imageSelected);
+  actionAppend_Image->setEnabled(l_imageSelected && l_behaviorSelected);
+  actionEdit_Behavior->setEnabled(l_behaviorSelected);
+  actionMove_frame_right->setEnabled(l_currentBeSelected);
+  actionMove_frame_left->setEnabled(l_currentBeSelected);
+  m_currentBehaviorModel.onDataChanged();
+}
+
+/*void MainWindowImpl::imageListSelectionChanged(QItemSelection n, QItemSelection o) {
   if (n.count() == 0) {
     actionDelete_Image->setEnabled(false);
   } else {
     actionDelete_Image->setEnabled(true);
   }
+}
+
+void MainWindowImpl::behaviorListSelectionChanged(QItemSelection n, QItemSelection o) {
+  if (n.count() == 0) {
+    actionEdit_Behavior->setEnabled(false);
+    actionMove_frame_right->setEnabled(false);
+    actionMove_frame_left->setEnabled(false);
+  } else {
+    actionEdit_Behavior->setEnabled(true);
+    actionMove_frame_right->setEnabled(true);
+    actionMove_frame_left->setEnabled(true);
+  }
+  m_currentBehaviorModel.onDataChanged();
+}
+
+void MainWindowImpl::currentBehaviorSelectionChanged(QItemSelection n, QItemSelection o) {
+  if (n.count() == 0) {
+    actionMove_frame_right->setEnabled(false);
+    actionMove_frame_left->setEnabled(false);
+  } else {
+    actionMove_frame_right->setEnabled(true);
+    actionMove_frame_left->setEnabled(true);
+  }
+}*/
+
+void MainWindowImpl::doDeleteImage() {
+  m_data.deleteImage(imageList->selectionModel()->selectedIndexes().front().row());
+  m_imageModel.onDataChanged();
+}
+
+void MainWindowImpl::doAppendImage() {
+  m_data.appendImage(imageList->selectionModel()->selectedIndexes().front().row(),
+      behaviorList->selectionModel()->selectedIndexes().front().row());
+  m_currentBehaviorModel.onDataChanged();
+}
+
+void MainWindowImpl::doAddBehavior() {
+  m_data.addBehavior("StrangeName");
+  m_behaviorModel.onDataChanged();
+}
+
+void MainWindowImpl::doEditBehavior() {
+}
+
+void MainWindowImpl::doMoveFrameRight() {
+  m_data.moveFrameRight(
+      behaviorList->selectionModel()->selectedIndexes().front().row(),
+      currentBehavior->selectionModel()->selectedIndexes().front().row());
+  m_currentBehaviorModel.onDataChanged();
+}
+
+void MainWindowImpl::doMoveFrameLeft() {
+  m_data.moveFrameLeft(
+      behaviorList->selectionModel()->selectedIndexes().front().row(),
+      currentBehavior->selectionModel()->selectedIndexes().front().row());
+  m_currentBehaviorModel.onDataChanged();
 }
 

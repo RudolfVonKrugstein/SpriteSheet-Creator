@@ -11,6 +11,7 @@ public:
   virtual int rowCount(const QModelIndex& parent = QModelIndex() ) const;
   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
+  void onDataChanged();
 private:
   SpriteSheetData& m_data;
   QListView* m_behaviorListView;

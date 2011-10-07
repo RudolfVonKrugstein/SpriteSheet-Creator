@@ -28,3 +28,12 @@ QVariant CurrentBehaviorModel::data(const QModelIndex& index, int role) const {
   }
   return QVariant();
 }
+
+void CurrentBehaviorModel::onDataChanged() {
+  if  ( m_behaviorListView->selectionModel()->selectedIndexes().count() == 0) {
+    return;
+  }
+  int l_selectedBehavior = m_behaviorListView->selectionModel()->selectedIndexes().front().row();
+  size_t l_numFrames = m_data.m_behaviors[m_data.m_behaviorNames[l_selectedBehavior]].size();
+  emit dataChanged(createIndex(0,0), createIndex(l_numFrames, 1)); 
+}

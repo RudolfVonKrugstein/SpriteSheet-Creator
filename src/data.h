@@ -20,12 +20,19 @@ public:
   bool load(QDomDocument& doc, QDomNode& root);
   void clear();
 
+  void deleteImage(int f_index);
+  void appendImage(int f_index, int f_behaviorIndex);
+  void addBehavior(const QString f_name);
+  void moveFrameRight(int f_behaviorIndex, int f_frameIndex);
+  void moveFrameLeft(int f_behaviorIndex, int f_frameIndex);
+
   std::map<QString, Image>    m_images;
   std::vector<QString>        m_imageNames;
   std::map<QString, Behavior> m_behaviors;
   std::vector<QString>        m_behaviorNames;
 
   QImage m_outImage;
+
 };
 
 #endif

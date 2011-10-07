@@ -204,7 +204,11 @@
        <widget class="QWidget" name="horizontalLayoutWidget">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QListView" name="currentBehavior"/>
+          <widget class="QListView" name="currentBehavior">
+           <property name="flow">
+            <enum>QListView::LeftToRight</enum>
+           </property>
+          </widget>
          </item>
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_3">

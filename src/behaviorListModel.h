@@ -12,6 +12,7 @@ public:
   virtual QStringList mimeTypes() const;
   virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 
+  void onDataChanged();
 private:
   SpriteSheetData& m_data;
 };

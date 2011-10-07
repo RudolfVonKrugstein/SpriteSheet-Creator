@@ -24,7 +24,16 @@ private:
   
 public slots:
   void importImages();
-  void imageListSelectionChanged(QItemSelection n, QItemSelection o);
+  void selectionChanged(QItemSelection n, QItemSelection o);
+  /*void imageListSelectionChanged(QItemSelection n, QItemSelection o);
+  void behaviorListSelectionChanged(QItemSelection n, QItemSelection o);
+  void currentBehaviorSelectionChanged(QItemSelection n, QItemSelection o);*/
+  void doDeleteImage();
+  void doAppendImage();
+  void doAddBehavior();
+  void doEditBehavior();
+  void doMoveFrameRight();
+  void doMoveFrameLeft();
 };
 
 #endif

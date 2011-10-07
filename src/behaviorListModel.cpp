@@ -32,3 +32,6 @@ bool BehaviorListModel::dropMimeData(const QMimeData *data, Qt::DropAction actio
   return true;  
 }
 
+void BehaviorListModel::onDataChanged() {
+  emit dataChanged(createIndex(0,0), createIndex(m_data.m_behaviorNames.size(), 1)); 
+}

@@ -15,7 +15,7 @@ public:
   const QString getShortName(const QString& name) const;
   void getImagePointerList(std::list<Image*>& f_list);
   void recreatePackedTexture(bool f_autocrop);
-  void exportXML(const QString outDir, const QString xmlFile, const QString pngFile, bool f_autocrop, QWidget* f_parent);
+  void exportXML(const QString& xmlFile, const QString pngFile, bool f_autocrop, QWidget* f_parent);
   void save(QDomDocument& doc, QDomElement& root);
   bool load(QDomDocument& doc, QDomNode& root);
   void clear();

@@ -41,6 +41,18 @@ MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(m_data), m_behavi
   editBehavior->setDefaultAction(actionEdit_Behavior);
   moveFrameRight->setDefaultAction(actionMove_frame_right);
   moveFrameLeft->setDefaultAction(actionMove_frame_left);
+
+  // Set action icons
+  QStyle* l_style = QApplication::style();
+  actionImport_Images->setIcon(l_style->standardIcon(QStyle::SP_DialogYesButton));
+  actionDelete_Image->setIcon(l_style->standardIcon(QStyle::SP_TrashIcon));
+  actionAppend_Image->setIcon(l_style->standardIcon(QStyle::SP_ArrowDown));
+  actionMove_frame_right->setIcon(l_style->standardIcon(QStyle::SP_ArrowRight));
+  actionMove_frame_left->setIcon(l_style->standardIcon(QStyle::SP_ArrowLeft));
+  actionLoad->setIcon(l_style->standardIcon(QStyle::SP_DialogOpenButton));
+  actionSave->setIcon(l_style->standardIcon(QStyle::SP_DialogSaveButton));
+  actionAdd_Behavior->setIcon(l_style->standardIcon(QStyle::SP_DialogYesButton));
+  actionEdit_Behavior->setIcon(l_style->standardIcon(QStyle::SP_DialogApplyButton));
   
   // connect actions
   connect(actionImport_Images, SIGNAL(triggered()), this, SLOT(importImages()));
@@ -50,6 +62,7 @@ MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(m_data), m_behavi
   connect(actionEdit_Behavior, SIGNAL(triggered()), this, SLOT(doEditBehavior()));
   connect(actionMove_frame_right, SIGNAL(triggered()), this, SLOT(doMoveFrameRight()));
   connect(actionMove_frame_left, SIGNAL(triggered()), this, SLOT(doMoveFrameLeft()));
+  connect(actionExport_Spritesheet, SIGNAL(triggered()), this, SLOT(doExportSpriteSheet()));
   
   /*connect(imageList->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(imageListSelectionChanged(QItemSelection, QItemSelection)));
   connect(behaviorList->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(behaviorListSelectionChanged(QItemSelection, QItemSelection)));
@@ -158,4 +171,16 @@ void MainWindowImpl::doMoveFrameLeft() {
       currentBehavior->selectionModel()->selectedIndexes().front().row());
   m_currentBehaviorModel.onDataChanged();
 }
+
+void MainWindowImpl::doExportSpriteSheet() {
+  QString sscFile = QFileDialog::getSaveFileName(this, "Choose XML file to export to", "", "XML (*.xml)");  
+  if (sscFile == "") {
+    return;
+  }
+  QString pngFile = sscFile;
+  pngFile.truncate(pngFile.size() - 4);
+  pngFile += ".png";
+  m_data.exportXML(sscFile, pngFile, autocrop->checkState() == Qt::Checked ,this);
+}
+
 

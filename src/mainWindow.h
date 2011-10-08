@@ -34,6 +34,7 @@ public slots:
   void doEditBehavior();
   void doMoveFrameRight();
   void doMoveFrameLeft();
+  void doExportSpriteSheet();
 };
 
 #endif

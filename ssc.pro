@@ -6,7 +6,7 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += . guidata src
 INCLUDEPATH += . src
-CONFIG += qt
+CONFIG += qt debug
 QT += xml
 
 # Input

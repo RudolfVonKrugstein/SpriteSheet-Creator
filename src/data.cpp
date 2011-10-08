@@ -137,11 +137,11 @@ bool SpriteSheetData::load(QDomDocument& doc, QDomNode& root) {
   return true;
 }
 
-void SpriteSheetData::exportXML(const QString outDir, const QString xmlFile, const QString pngFile, bool f_autocrop, QWidget* f_parent){
+void SpriteSheetData::exportXML(const QString& xmlFile, const QString pngFile, bool f_autocrop, QWidget* f_parent){
   // Write the png
   QImageWriter l_writer;
   l_writer.setFormat("png");
-  l_writer.setFileName(outDir + pngFile);
+  l_writer.setFileName(pngFile);
   if (!l_writer.write(m_outImage)) {
     QMessageBox::critical(f_parent, "Unable to write PNG", l_writer.errorString());
     return;
@@ -171,7 +171,7 @@ void SpriteSheetData::exportXML(const QString outDir, const QString xmlFile, con
       sprite.setAttribute("colorOffset", QString::number((*i)->getCroppedOffset().x()) + "," + QString::number((*i)->getCroppedOffset().y()));
     }
     // Set texture rect
-    sprite.setAttribute("textureRect", QString::number((*i)->m_anchor.x()) + "," + QString::number((*i)->m_anchor.y()) + "," + QString((*i)->width(f_autocrop)) + "," + QString((*i)->height(f_autocrop)));
+    sprite.setAttribute("textureRect", QString::number((*i)->m_anchor.x()) + "," + QString::number((*i)->m_anchor.y()) + "," + QString::number((*i)->width(f_autocrop)) + "," + QString::number((int)(*i)->height(f_autocrop)));
     // Add the sprite
     sprites.appendChild(sprite);
   }
@@ -194,7 +194,7 @@ void SpriteSheetData::exportXML(const QString outDir, const QString xmlFile, con
   root.appendChild(behaviors);
 
   // Write xml out
-  QFile file( outDir + xmlFile);
+  QFile file(xmlFile);
   if( !file.open( QFile::WriteOnly ) ) {
     QMessageBox::critical(f_parent, "Unable to write XML", file.errorString());
     return;

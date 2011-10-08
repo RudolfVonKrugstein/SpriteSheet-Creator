@@ -33,8 +33,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>385</width>
-           <height>382</height>
+           <width>381</width>
+           <height>384</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
@@ -91,8 +91,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>386</width>
-           <height>382</height>
+           <width>380</width>
+           <height>384</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
@@ -133,8 +133,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>201</width>
-           <height>382</height>
+           <width>205</width>
+           <height>384</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout_2">
@@ -254,7 +254,7 @@
      <x>0</x>
      <y>0</y>
      <width>1004</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -279,6 +279,7 @@
    <addaction name="actionImport_Images"/>
    <addaction name="actionLoad"/>
    <addaction name="actionSave"/>
+   <addaction name="actionExport_Spritesheet"/>
   </widget>
   <action name="actionImport_Images">
    <property name="text">
@@ -331,6 +332,11 @@
   <action name="actionMove_frame_left">
    <property name="text">
     <string>Move frame left</string>
+   </property>
+  </action>
+  <action name="actionExport_Spritesheet">
+   <property name="text">
+    <string>Export Spritesheet</string>
    </property>
   </action>
  </widget>

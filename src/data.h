@@ -3,9 +3,9 @@
 
 #include <QtGui>
 #include "image.h"
+#include "behavior.h"
 #include <QtXml/QDomDocument>
 
-typedef std::vector<QString> Behavior;
 // Data class for all spritesheet data
 class SpriteSheetData {
 public:

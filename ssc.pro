@@ -16,7 +16,8 @@ HEADERS += src/behaviorListModel.h \
            src/imagePacker.h \
            src/mainWindow.h \
            src/data.h \
-           src/currentBehaviorModel.h
+           src/currentBehaviorModel.h \
+           src/behavior.h
 FORMS += guidata/gui.ui \
          guidata/behaviorSettings.ui
 SOURCES += src/behaviorListModel.cpp \
@@ -26,4 +27,5 @@ SOURCES += src/behaviorListModel.cpp \
            src/main.cpp \
            src/mainWindow.cpp \
            src/data.cpp \
-           src/currentBehaviorModel.cpp
+           src/currentBehaviorModel.cpp \
+           src/behavior.cpp

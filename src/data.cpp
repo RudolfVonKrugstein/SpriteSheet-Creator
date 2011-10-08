@@ -71,9 +71,9 @@ void SpriteSheetData::save(QDomDocument& doc, QDomElement& root) {
   for (std::vector<QString>::iterator i = m_behaviorNames.begin(); i != m_behaviorNames.end(); ++i) {
     QDomElement behavior = doc.createElement("behavior");
     behavior.setAttribute("name", *i);
-    for (std::vector<QString>::iterator j = m_behaviors[*i].begin(); j != m_behaviors[*i].end(); ++j) {
+    for (size_t j = 0; j != m_behaviors[*i].size(); ++j) {
       QDomElement frame = doc.createElement("frame");
-      frame.setAttribute("image", *j);
+      frame.setAttribute("image", m_behaviors[*i][j]);
       behavior.appendChild(frame);
     }
     behaviors.appendChild(behavior);
@@ -184,9 +184,9 @@ void SpriteSheetData::exportXML(const QString& xmlFile, const QString pngFile, b
     // Set name
     behavior.setAttribute("name", *i);
     Behavior& l_behavior = m_behaviors[*i];
-    for (std::vector<QString>::iterator j = l_behavior.begin(); j != l_behavior.end(); ++j) {
+    for (size_t j = 0; j != l_behavior.size(); ++j) {
       QDomElement frame = doc.createElement("frame");
-      frame.setAttribute("sprite", *j); 
+      frame.setAttribute("sprite", l_behavior[j]); 
       behavior.appendChild(frame);
     }
     behaviors.appendChild(behavior);
@@ -215,13 +215,7 @@ void SpriteSheetData::deleteImage(int f_index) {
   m_imageNames.pop_back();
   // Remove from all behaviors
   for (std::map<QString, Behavior>::iterator bi = m_behaviors.begin(); bi != m_behaviors.end(); ++bi) {
-    for (Behavior::iterator i = bi->second.begin(); i != bi->second.end(); /*++i*/) {
-      if ((*i) == l_name) {
-        bi->second.erase(i++);
-      } else {
-        ++i;
-      }
-    }
+    bi->second.erase(l_name);
   } 
 }
 

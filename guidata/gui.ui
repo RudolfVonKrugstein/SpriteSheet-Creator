@@ -166,12 +166,19 @@
        <widget class="QWidget" name="verticalLayoutWidget">
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QListView" name="behaviorList"/>
+          <widget class="QTableView" name="behaviorList"/>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
             <widget class="QToolButton" name="newBehavior">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="deleteBehavior">
              <property name="text">
               <string>...</string>
              </property>
@@ -337,6 +344,11 @@
   <action name="actionExport_Spritesheet">
    <property name="text">
     <string>Export Spritesheet</string>
+   </property>
+  </action>
+  <action name="actionDelete_Behavior_2">
+   <property name="text">
+    <string>Delete Behavior</string>
    </property>
   </action>
  </widget>

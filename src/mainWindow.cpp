@@ -2,6 +2,7 @@
 #include "mainWindow.h"
 #include "imagePacker.h"
 #include <iostream>
+#include "editBehaviorDialog.h"
 
 MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(m_data), m_behaviorModel(m_data) ,m_currentBehaviorModel(m_data)
 {
@@ -38,6 +39,7 @@ MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(m_data), m_behavi
   deleteImage->setDefaultAction(actionDelete_Image);
   appendImage->setDefaultAction(actionAppend_Image); 
   newBehavior->setDefaultAction(actionAdd_Behavior);
+  deleteBehavior->setDefaultAction(actionDelete_Behavior);
   editBehavior->setDefaultAction(actionEdit_Behavior);
   moveFrameRight->setDefaultAction(actionMove_frame_right);
   moveFrameLeft->setDefaultAction(actionMove_frame_left);
@@ -59,6 +61,7 @@ MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(m_data), m_behavi
   connect(actionDelete_Image, SIGNAL(triggered()), this, SLOT(doDeleteImage()));
   connect(actionAppend_Image, SIGNAL(triggered()), this, SLOT(doAppendImage()));
   connect(actionAdd_Behavior, SIGNAL(triggered()), this, SLOT(doAddBehavior()));
+  connect(actionDelete_Behavior, SIGNAL(triggered()), this, SLOT(doDeleteBehavior()));
   connect(actionEdit_Behavior, SIGNAL(triggered()), this, SLOT(doEditBehavior()));
   connect(actionMove_frame_right, SIGNAL(triggered()), this, SLOT(doMoveFrameRight()));
   connect(actionMove_frame_left, SIGNAL(triggered()), this, SLOT(doMoveFrameLeft()));
@@ -75,6 +78,7 @@ MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(m_data), m_behavi
   actionDelete_Image->setEnabled(false);
   actionAppend_Image->setEnabled(false);
   actionEdit_Behavior->setEnabled(false);
+  actionDelete_Behavior->setEnabled(false);
   actionMove_frame_right->setEnabled(false);
   actionMove_frame_left->setEnabled(false);
 }
@@ -103,6 +107,7 @@ void MainWindowImpl::selectionChanged(QItemSelection n, QItemSelection o) {
   actionDelete_Image->setEnabled(l_imageSelected);
   actionAppend_Image->setEnabled(l_imageSelected && l_behaviorSelected);
   actionEdit_Behavior->setEnabled(l_behaviorSelected);
+  actionDelete_Behavior->setEnabled(l_behaviorSelected);
   actionMove_frame_right->setEnabled(l_currentBeSelected);
   actionMove_frame_left->setEnabled(l_currentBeSelected);
   m_currentBehaviorModel.onDataChanged();
@@ -151,11 +156,30 @@ void MainWindowImpl::doAppendImage() {
 }
 
 void MainWindowImpl::doAddBehavior() {
-  m_data.addBehavior("StrangeName");
-  m_behaviorModel.onDataChanged();
+  EditBehaviorDialog dialog(this);
+  dialog.exec();
+  Behavior b;
+  b.m_name = dialog.name->text();
+  b.m_frameRate = dialog.framerate->value();
+  b.m_looped = dialog.looped->checkState() == Qt::Checked;
+  m_behaviorModel.addBehavior(b);
+}
+
+void MainWindowImpl::doDeleteBehavior() {
+  m_behaviorModel.deleteBehavior(behaviorList->selectionModel()->selectedIndexes().front().row());
 }
 
 void MainWindowImpl::doEditBehavior() {
+  EditBehaviorDialog dialog(this);
+  Behavior &b = m_data.m_behaviors[m_data.m_behaviorNames[behaviorList->selectionModel()->selectedIndexes().front().row()]];
+  dialog.name->setText(b.m_name);
+  dialog.framerate->setValue(b.m_frameRate);
+  dialog.looped->setCheckState(b.m_looped?Qt::Checked:Qt::Unchecked);
+  dialog.exec();
+  b.m_name = dialog.name->text();
+  b.m_frameRate = dialog.framerate->value();
+  b.m_looped = dialog.looped->checkState() == Qt::Checked;
+  m_behaviorModel.onDataChanged();
 }
 
 void MainWindowImpl::doMoveFrameRight() {

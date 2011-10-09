@@ -31,6 +31,7 @@ public slots:
   void doDeleteImage();
   void doAppendImage();
   void doAddBehavior();
+  void doDeleteBehavior();
   void doEditBehavior();
   void doMoveFrameRight();
   void doMoveFrameLeft();

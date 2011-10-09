@@ -6,7 +6,7 @@
 class CurrentBehaviorModel : public QAbstractListModel {
 public:
   CurrentBehaviorModel(SpriteSheetData& f_data, QObject* parent = 0);
-  inline void setBehaviorList(QListView* f_list) {m_behaviorListView = f_list;};
+  inline void setBehaviorList(QTableView* f_list) {m_behaviorListView = f_list;};
   
   virtual int rowCount(const QModelIndex& parent = QModelIndex() ) const;
   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
@@ -14,7 +14,7 @@ public:
   void onDataChanged();
 private:
   SpriteSheetData& m_data;
-  QListView* m_behaviorListView;
+  QTableView* m_behaviorListView;
 };
 
 #endif

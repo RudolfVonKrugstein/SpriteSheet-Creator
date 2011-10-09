@@ -22,9 +22,12 @@ public:
 
   void deleteImage(int f_index);
   void appendImage(int f_index, int f_behaviorIndex);
-  void addBehavior(const QString f_name);
+  int addBehavior(Behavior b);
+  void deleteBehavior(const int index);
   void moveFrameRight(int f_behaviorIndex, int f_frameIndex);
   void moveFrameLeft(int f_behaviorIndex, int f_frameIndex);
+
+  void renameBehavior(int index, const QString newName);
 
   std::map<QString, Image>    m_images;
   std::vector<QString>        m_imageNames;

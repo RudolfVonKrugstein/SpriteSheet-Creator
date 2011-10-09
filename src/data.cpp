@@ -14,6 +14,13 @@ void SpriteSheetData::addImage(const Image& image, const QString& name) {
   m_imageNames.push_back(name); 
 }
 
+void SpriteSheetData::renameBehavior(int index, const QString newName) {
+  Behavior b = m_behaviors[m_behaviorNames[index]];
+  m_behaviors.erase(m_behaviorNames[index]);
+  m_behaviorNames[index] = newName;
+  m_behaviors[newName] = b;
+}
+
 bool SpriteSheetData::loadImage(const QString& fileName, const QString& name) {
   QImage image(fileName); 
   if (image.isNull()) {
@@ -223,9 +230,19 @@ void SpriteSheetData::appendImage(int f_index, int f_behaviorIndex) {
   m_behaviors[m_behaviorNames[f_behaviorIndex]].push_back(m_imageNames[f_index]);
 }
 
-void SpriteSheetData::addBehavior(const QString f_name) {
-  m_behaviorNames.push_back(f_name);
-  m_behaviors[f_name] = Behavior();
+int SpriteSheetData::addBehavior(Behavior b) {
+  while (m_behaviors.find(b.m_name) != m_behaviors.end()) b.m_name += "X";
+  m_behaviorNames.push_back(b.m_name);
+  m_behaviors[b.m_name] = b;
+  return m_behaviorNames.size();
+}
+
+void SpriteSheetData::deleteBehavior(const int index) {
+  m_behaviors.erase(m_behaviorNames[index]);
+  for (int j = index; j < m_behaviorNames.size() -1; ++j) {
+    m_behaviorNames[j] = m_behaviorNames[j+1];
+  }
+  m_behaviorNames.pop_back();
 }
 
 void SpriteSheetData::moveFrameRight(int f_behaviorIndex, int f_frameIndex) {

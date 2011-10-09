@@ -8,6 +8,7 @@ class Behavior {
 public:
   Behavior();
   std::vector<Frame> m_frames;
+  QString m_name;
   int m_frameRate;
   bool m_looped; 
   Frame& operator[](size_t index);

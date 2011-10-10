@@ -158,7 +158,7 @@ void SpriteSheetData::exportXML(const QString& xmlFile, const QString pngFile, b
   QDomElement root = doc.createElement("spritesheet");
   doc.appendChild(root);
   QDomElement texture = doc.createElement("texture");
-  texture.setAttribute("name", pngFile);
+  texture.setAttribute("file", pngFile);
   root.appendChild(texture);
   
   std::list<Image*> l_images;
@@ -191,9 +191,11 @@ void SpriteSheetData::exportXML(const QString& xmlFile, const QString pngFile, b
     // Set name
     behavior.setAttribute("name", *i);
     Behavior& l_behavior = m_behaviors[*i];
+	behavior.setAttribute("framerate", l_behavior.m_frameRate); 
+	behavior.setAttribute("looped", l_behavior.m_looped); 
     for (size_t j = 0; j != l_behavior.size(); ++j) {
       QDomElement frame = doc.createElement("frame");
-      frame.setAttribute("sprite", l_behavior[j]); 
+      frame.setAttribute("sprite", m_images[l_behavior[j]].getName()); 
       behavior.appendChild(frame);
     }
     behaviors.appendChild(behavior);

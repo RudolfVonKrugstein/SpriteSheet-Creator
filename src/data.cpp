@@ -54,7 +54,9 @@ void SpriteSheetData::recreatePackedTexture(bool f_autocrop) {
   ip.packImages();
   // Create destionation image
   m_outImage = QImage(ip.getDim(), QImage::Format_ARGB32);
+  m_outImage.fill(Qt::transparent);
   QPainter painter(&m_outImage);
+  painter.setBackgroundMode(Qt::TransparentMode);
   for (std::list<Image*>::iterator i = l_images.begin(); i != l_images.end(); ++i) {
     if (!f_autocrop)
       painter.drawImage((*i)->m_anchor, (*i)->getImage());
@@ -158,7 +160,7 @@ void SpriteSheetData::exportXML(const QString& xmlFile, const QString pngFile, b
   QDomElement root = doc.createElement("spritesheet");
   doc.appendChild(root);
   QDomElement texture = doc.createElement("texture");
-  texture.setAttribute("file", pngFile);
+  texture.setAttribute("file", QFileInfo(xmlFile).dir().relativeFilePath(pngFile));
   root.appendChild(texture);
   
   std::list<Image*> l_images;

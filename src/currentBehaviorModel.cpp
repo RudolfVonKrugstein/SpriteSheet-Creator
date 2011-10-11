@@ -37,3 +37,27 @@ void CurrentBehaviorModel::onDataChanged() {
   size_t l_numFrames = m_data.m_behaviors[m_data.m_behaviorNames[l_selectedBehavior]].size();
   emit dataChanged(createIndex(0,0), createIndex(l_numFrames, 1)); 
 }
+
+Qt::ItemFlags CurrentBehaviorModel::flags(const QModelIndex &index) const
+{
+  if (index.isValid())
+    return (Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled);
+
+  return Qt::ItemIsDropEnabled;
+}
+
+bool CurrentBehaviorModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+    int row, int column, const QModelIndex &parent) {
+  return true;
+}
+
+QStringList CurrentBehaviorModel::mimeTypes() const {
+  QStringList types;
+  types << "application/image.name";
+  return types;
+}
+
+Qt::DropActions CurrentBehaviorModel::supportedDropActions() const
+{
+      return Qt::CopyAction;// | Qt::MoveAction;
+}

@@ -11,6 +11,12 @@ public:
   virtual int rowCount(const QModelIndex& parent = QModelIndex() ) const;
   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
+  bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+      int row, int column, const QModelIndex &parent);
+  QStringList mimeTypes() const;
+  Qt::DropActions supportedDropActions() const;
+  Qt::ItemFlags flags(const QModelIndex &index) const;
+
   void onDataChanged();
 private:
   SpriteSheetData& m_data;

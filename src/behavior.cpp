@@ -18,6 +18,13 @@ void Behavior::push_back(const Frame& f) {
   m_frames.push_back(f);
 }
 
+void Behavior::insert(int row, const Frame& f) {
+  m_frames.push_back(f);
+  for (size_t i = m_frames.size()-1; i != row; --i) {
+    std::swap(m_frames[i], m_frames[i-1]);
+  }
+}
+
 void Behavior::erase(const Frame& f) {
   bool l_found = true;
   while(l_found) {

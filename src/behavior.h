@@ -14,6 +14,7 @@ public:
   Frame& operator[](size_t index);
   size_t size();
   void push_back(const Frame& f);
+  void insert(int pos, const Frame& f);
   void erase(const Frame& f);
 };
 

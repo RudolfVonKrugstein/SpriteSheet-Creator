@@ -83,4 +83,5 @@ void ImagePacker::packImages() {
       increaseDimensions();
     }
   }
+  crop();
 }

@@ -96,7 +96,7 @@ bool CurrentBehaviorModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
   if (action == Qt::IgnoreAction) {
     return true;
   }
-  if (!data->hasFormat("application/image.name")) {
+  if (!data->hasFormat("application/image.name") && !data->hasFormat("application/currentBehavior.index")) {
     return false;
   }
   if (column > 0) {
@@ -111,17 +111,34 @@ bool CurrentBehaviorModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
     }
   }
 
-  QByteArray encodedData = data->data("application/image.name");
-  QDataStream stream(&encodedData, QIODevice::ReadOnly);
+  if (data->hasFormat("application/image.name")) {
+    QByteArray encodedData = data->data("application/image.name");
+	QDataStream stream(&encodedData, QIODevice::ReadOnly);
 
-  while (!stream.atEnd()) {
-    QString name;
-    stream >> name;;
+	while (!stream.atEnd()) {
+	  QString name;
+	  stream >> name;;
 
-    beginInsertRows(QModelIndex(), row, row);
-    m_data.m_behaviors[m_data.m_behaviorNames[m_selectedBehavior]].insert(row, name);
-    endInsertRows();
-    ++row;
+	  beginInsertRows(QModelIndex(), row, row);
+	  m_data.m_behaviors[m_data.m_behaviorNames[m_selectedBehavior]].insert(row, name);
+	  endInsertRows();
+	  ++row;
+	}
+  } else {
+    QByteArray encodedData = data->data("application/currentBehavior.index");
+	QDataStream stream(&encodedData, QIODevice::ReadOnly);
+	// Store the range of changed indexes, so we can emmit the appropriate data changed
+	int minChangedIndex = row;
+	int maxChangedIndex = row;
+
+	while (!stream.atEnd()) {
+      int srcPos;
+	  stream >> srcPos;
+	  m_data.m_behaviors[m_data.m_behaviorNames[m_selectedBehavior]].moveFrame(srcPos, row);
+	  minChangedIndex = qMin(minChangedIndex, srcPos);
+	  maxChangedIndex = qMax(maxChangedIndex, srcPos);
+	}
+	emit dataChanged(createIndex(minChangedIndex,0), createIndex(maxChangedIndex,1));
   }
   return true;
 }
@@ -129,6 +146,7 @@ bool CurrentBehaviorModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
 QStringList CurrentBehaviorModel::mimeTypes() const {
   QStringList types;
   types << "application/image.name";
+  types << "application/currentBehavior.index";
   return types;
 }
 
@@ -144,11 +162,10 @@ QMimeData *CurrentBehaviorModel::mimeData(const QModelIndexList &indexes) const 
 
   foreach (QModelIndex index, indexes) {
     if (index.isValid()) {
-	  QString text = m_data.m_behaviors[m_data.m_behaviorNames[m_selectedBehavior]][index.row()];
-	  stream << text;
+	  stream << index.row();
     }
   }
-  mimeData->setData("application/image.name", encodedData);
+  mimeData->setData("application/currentBehavior.index", encodedData);
   return mimeData;
 }
 

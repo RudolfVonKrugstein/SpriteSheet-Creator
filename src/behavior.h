@@ -16,7 +16,9 @@ public:
   void push_back(const Frame& f);
   void pop_back();
   void insert(int pos, const Frame& f);
+  void remove(int pos);
   void erase(const Frame& f);
+  void moveFrame(int srcPos, int dstPos);
 };
 
 #endif

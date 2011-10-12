@@ -29,6 +29,27 @@ void Behavior::insert(int row, const Frame& f) {
   }
 }
 
+void Behavior::remove(int pos) {
+	for (size_t i = pos; i < m_frames.size() -1; ++i) {
+		m_frames[i] = m_frames[i+1];
+	}
+	m_frames.pop_back();
+}
+
+void Behavior::moveFrame(int srcPos, int dstPos) {
+  // Moves the frame at srcPos before the frame at dstPos
+  if (srcPos < dstPos) {
+    for (int i = srcPos; i < dstPos-1; ++i) {
+	  std::swap(m_frames[i], m_frames[i+1]);
+	}		
+  }
+  if (srcPos > dstPos) {
+    for(int i = srcPos; i > dstPos; --i) {
+	  std::swap(m_frames[i], m_frames[i-1]);
+	}
+  }
+}
+
 void Behavior::erase(const Frame& f) {
   bool l_found = true;
   while(l_found) {

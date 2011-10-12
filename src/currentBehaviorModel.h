@@ -14,11 +14,18 @@ public:
   bool dropMimeData(const QMimeData *data, Qt::DropAction action,
       int row, int column, const QModelIndex &parent);
   QStringList mimeTypes() const;
+  virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
   Qt::DropActions supportedDropActions() const;
+  Qt::DropActions supportedDragActions() const;
   Qt::ItemFlags flags(const QModelIndex &index) const;
+  virtual bool removeRows(int row, int count, const QModelIndex &parent);
 
   void onDataChanged();
+  void testSelectedBehaviorChanged();
 private:
+  // Behavior selected on the last testSelectedBehaviroChanged
+  int m_selectedBehavior;
+
   SpriteSheetData& m_data;
   QTableView* m_behaviorListView;
 };

@@ -18,6 +18,7 @@ MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(m_data), m_behavi
   imageList->setDragEnabled(true);
   currentBehavior->setAcceptDrops(true);
   currentBehavior->setDropIndicatorShown(true);
+  currentBehavior->setDragEnabled(true);
 
   // Create context menu
   imageList->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -111,6 +112,7 @@ void MainWindowImpl::selectionChanged(QItemSelection n, QItemSelection o) {
   actionMove_frame_right->setEnabled(l_currentBeSelected);
   actionMove_frame_left->setEnabled(l_currentBeSelected);
   m_currentBehaviorModel.onDataChanged();
+  m_currentBehaviorModel.testSelectedBehaviorChanged();
 }
 
 /*void MainWindowImpl::imageListSelectionChanged(QItemSelection n, QItemSelection o) {

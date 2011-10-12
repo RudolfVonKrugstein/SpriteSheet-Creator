@@ -36,6 +36,8 @@ public slots:
   void doMoveFrameRight();
   void doMoveFrameLeft();
   void doExportSpriteSheet();
+  void doSave();
+  void doLoad();
 };
 
 #endif

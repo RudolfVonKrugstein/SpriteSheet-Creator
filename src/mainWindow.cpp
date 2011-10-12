@@ -67,6 +67,8 @@ MainWindowImpl::MainWindowImpl(QWidget* parent) : m_imageModel(m_data), m_behavi
   connect(actionMove_frame_right, SIGNAL(triggered()), this, SLOT(doMoveFrameRight()));
   connect(actionMove_frame_left, SIGNAL(triggered()), this, SLOT(doMoveFrameLeft()));
   connect(actionExport_Spritesheet, SIGNAL(triggered()), this, SLOT(doExportSpriteSheet()));
+  connect(actionSave, SIGNAL(triggered()), this, SLOT(doSave()));
+  connect(actionLoad, SIGNAL(triggered()), this, SLOT(doLoad()));
   
   /*connect(imageList->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(imageListSelectionChanged(QItemSelection, QItemSelection)));
   connect(behaviorList->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(behaviorListSelectionChanged(QItemSelection, QItemSelection)));
@@ -209,4 +211,73 @@ void MainWindowImpl::doExportSpriteSheet() {
   m_data.exportXML(sscFile, pngFile, autocrop->checkState() == Qt::Checked ,this);
 }
 
+void MainWindowImpl::doLoad() {
+  QString sscFile = QFileDialog::getOpenFileName(this, "Choose file to open", "", "SpriteSheetCreator XML file (*.ssc)");
+  if (sscFile == "") {
+    return;
+  }
+  QDomDocument doc("SpriteSheetCreator");
+  QFile file(sscFile);
+  if (!file.open(QFile::ReadOnly)) {
+    QMessageBox::critical(this, "Unable to open " + sscFile, file.errorString());
+    return;
+  }
+  if (!doc.setContent(&file)) {
+	file.close();
+    QMessageBox::critical(this, "Unable to read " + sscFile, file.errorString());
+    return;
+  }
+  file.close();
 
+  // Read the data
+  QDomNode rootNode = doc.firstChild();
+  QDomElement rootElement = rootNode.toElement();
+  if (rootElement.isNull() || rootElement.tagName() != "data") {
+    QMessageBox::critical(this, "Error while reading " + sscFile, "data tag not found");
+  }
+  // Read root attributes
+  QDomNode autocropNode = rootNode.namedItem("autoCrop");
+  if (autocropNode.isNull()) {
+    QMessageBox::critical(this, "Error while reading " + sscFile, "autocrop tag not found");
+  }
+  autocrop->setCheckState(autocropNode.toElement().attribute("enabled") == "0"?Qt::Unchecked:Qt::Checked);
+  // Read data
+  m_data.clear();
+  if (!m_data.load(doc, rootNode)) {
+    QMessageBox::critical(this, "Error while reading " + sscFile, "error reading image and behavior data");
+	m_data.clear();
+  }
+
+  // ALl changed
+  m_imageModel.onDataChanged();
+  m_behaviorModel.onDataChanged();
+  m_currentBehaviorModel.testSelectedBehaviorChanged();
+  m_currentBehaviorModel.onDataChanged();
+}
+
+void MainWindowImpl::doSave() {
+  QString sscFile = QFileDialog::getSaveFileName(this, "Choose file to save to", "", "SpriteSheetCreator XML file (*.ssc)");
+  if (sscFile == "") {
+    return;
+  }
+
+  QDomDocument doc("SpriteSheetCreator"); 
+  QDomElement root = doc.createElement("data");
+  doc.appendChild(root);
+  QDomElement autoCrop = doc.createElement("autoCrop");
+  autoCrop.setAttribute("enabled", autocrop->checkState() == Qt::Checked);
+  root.appendChild(autoCrop);
+  m_data.save(doc, root);
+
+  // Write xml out
+  QFile file(sscFile);
+  if( !file.open( QFile::WriteOnly ) ) {
+    QMessageBox::critical(this, "Unable to write to " + sscFile, file.errorString());
+    return;
+  }
+
+  QTextStream ts( &file );
+  ts << doc.toString();
+
+  file.close();
+}

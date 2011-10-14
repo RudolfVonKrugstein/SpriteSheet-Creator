@@ -17,6 +17,7 @@ public:
   void deleteBehavior(const int index);
 
   void onDataChanged();
+  void onReset();
 private:
   SpriteSheetData& m_data;
 };

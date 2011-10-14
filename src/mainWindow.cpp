@@ -250,9 +250,12 @@ void MainWindowImpl::doLoad() {
 
   // ALl changed
   m_imageModel.onDataChanged();
-  m_behaviorModel.onDataChanged();
+  m_behaviorModel.onReset();
   m_currentBehaviorModel.testSelectedBehaviorChanged();
   m_currentBehaviorModel.onDataChanged();
+  m_data.recreatePackedTexture(autocrop->checkState() == Qt::Checked);
+  // Set image
+  outTexture->setPixmap(QPixmap::fromImage(m_data.m_outImage));
 }
 
 void MainWindowImpl::doSave() {

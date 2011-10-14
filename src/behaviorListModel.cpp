@@ -46,6 +46,10 @@ void BehaviorListModel::onDataChanged() {
   emit dataChanged(createIndex(0,0), createIndex(m_data.m_behaviorNames.size(),4)); 
 }
 
+void BehaviorListModel::onReset() {
+	emit reset();
+}
+
 bool BehaviorListModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (!index.isValid()) {
     return false;
